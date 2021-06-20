@@ -16,10 +16,26 @@ import {
   AspectRatio,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function DetailsModal({ result }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [artist, setArtist] = useState();
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    (async () => {
+      const artistResult = await fetch(
+        `https://itunes.apple.com/lookup?id=${result.artistId}`
+      );
+      const data = await artistResult.json();
+      setArtist(data.results[0]);
+    })();
+  }, [isOpen, result]);
+
   return (
     <>
       <Button colorScheme="orange" onClick={onOpen}>
@@ -31,6 +47,11 @@ function DetailsModal({ result }) {
           <ModalHeader>{result.trackName}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            {artist && (
+              <Badge>
+                {artist.artistName} ({artist.primaryGenreName})
+              </Badge>
+            )}
             <AspectRatio maxW="560px" ratio={1}>
               <iframe title="naruto" src={result.previewUrl} allowFullScreen />
             </AspectRatio>
@@ -50,17 +71,7 @@ function DetailsModal({ result }) {
 
 function Itunes() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([
-    {
-      trackName: "WarsawJS",
-    },
-    {
-      trackName: "React",
-    },
-    {
-      trackName: "Itunes",
-    },
-  ]);
+  const [results, setResults] = useState([]);
 
   return (
     <Stack direction="column">
@@ -88,7 +99,7 @@ function Itunes() {
       </Stack>
       <UnorderedList>
         {results.map((result) => (
-          <ListItem>
+          <ListItem key={result.trackId}>
             {result.trackName} ({result.artistName})
             <DetailsModal result={result} />
           </ListItem>
