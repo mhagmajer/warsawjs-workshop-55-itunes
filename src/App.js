@@ -1,22 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Badge, Stack, Button } from "@chakra-ui/react";
+import { useState } from "react";
 
-function App() {
+function App(props) {
+  // const result = useState(0);
+  // const count = result[0];
+  // const setCount = result[1];
+  const [count, setCount] = useState(5);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Stack direction="row">
+          <Badge>{count}</Badge>
+          <Button
+            colorScheme="green"
+            onClick={() => {
+              setCount(count + 1);
+            }}
+          >
+            +
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              setCount(count - 1);
+            }}
+          >
+            -
+          </Button>
+        </Stack>
       </header>
     </div>
   );
