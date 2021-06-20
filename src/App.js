@@ -6,8 +6,47 @@ import {
   UnorderedList,
   ListItem,
   Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  AspectRatio,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
+
+function DetailsModal({ result }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <Button colorScheme="orange" onClick={onOpen}>
+        Open Modal
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{result.trackName}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <AspectRatio maxW="560px" ratio={1}>
+              <iframe title="naruto" src={result.previewUrl} allowFullScreen />
+            </AspectRatio>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 function Itunes() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,6 +90,7 @@ function Itunes() {
         {results.map((result) => (
           <ListItem>
             {result.trackName} ({result.artistName})
+            <DetailsModal result={result} />
           </ListItem>
         ))}
       </UnorderedList>
